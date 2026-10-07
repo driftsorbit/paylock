@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
 # CLI + contract integration test suite (#142).
 #
-# Deploys the trellis_core contract to a local Soroban devnet (via
+# Deploys the paylock_core contract to a local Soroban devnet (via
 # `stellar container start local`) and drives it exclusively through the
-# built `trellis` CLI binary, asserting on real on-chain results. This is the
+# built `paylock` CLI binary, asserting on real on-chain results. This is the
 # only layer of testing that exercises the CLI's actual argument formatting
 # against the real `stellar contract invoke` CLI and a real RPC endpoint —
-# the Rust unit tests in cli/trellis_cli/src never shell out.
+# the Rust unit tests in cli/paylock_cli/src never shell out.
 #
 # Requires: docker, the `stellar` CLI (26.x+) on PATH, and a
 # wasm32-unknown-unknown Rust target. See README.md in this directory.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-CLI_BIN="$REPO_ROOT/target/release/trellis"
-WASM_PATH="$REPO_ROOT/target/wasm32-unknown-unknown/release/trellis_core.wasm"
-NETWORK="${TRELLIS_E2E_NETWORK:-local}"
+CLI_BIN="$REPO_ROOT/target/release/paylock"
+WASM_PATH="$REPO_ROOT/target/wasm32-unknown-unknown/release/paylock_core.wasm"
+NETWORK="${PAYLOCK_E2E_NETWORK:-local}"
 if [ "$NETWORK" = "testnet" ]; then
   RPC_URL="${STELLAR_RPC_URL:-https://soroban-testnet.stellar.org}"
   PASSPHRASE="Test SDF Network ; September 2015"
@@ -111,11 +111,11 @@ PAYER=$(stellar keys address payer)
 PAYEE=$(stellar keys address payee)
 RESOLVER=$(stellar keys address resolver)
 
-log "building trellis CLI (release)..."
-cargo build --release --manifest-path "$REPO_ROOT/cli/trellis_cli/Cargo.toml" >/dev/null
+log "building paylock CLI (release)..."
+cargo build --release --manifest-path "$REPO_ROOT/cli/paylock_cli/Cargo.toml" >/dev/null
 
-log "building trellis_core contract (wasm32)..."
-cargo rustc --manifest-path "$REPO_ROOT/contracts/trellis_core/Cargo.toml" \
+log "building paylock_core contract (wasm32)..."
+cargo rustc --manifest-path "$REPO_ROOT/contracts/paylock_core/Cargo.toml" \
   --crate-type=cdylib --target=wasm32-unknown-unknown --release >/dev/null
 
 log "resolving test token (native XLM SAC)..."
@@ -124,14 +124,14 @@ if ! stellar contract info interface --contract-id "$TOKEN" --network "$NETWORK"
   stellar contract asset deploy --asset native --source payer --network "$NETWORK" >/dev/null 2>&1
 fi
 
-log "deploying trellis_core contract..."
+log "deploying paylock_core contract..."
 CONTRACT_ID=$(stellar contract deploy --wasm "$WASM_PATH" --source payer --network "$NETWORK" 2>/dev/null | tail -1)
 
 log "token=$TOKEN contract=$CONTRACT_ID"
 
 export STELLAR_RPC_URL="$RPC_URL"
 export STELLAR_NETWORK_PASSPHRASE="$PASSPHRASE"
-export TRELLIS_CONTRACT_ID="$CONTRACT_ID"
+export PAYLOCK_CONTRACT_ID="$CONTRACT_ID"
 
 # Unique-ish 64-hex-char agreement IDs so repeat runs against the same
 # container never collide with a prior run's state.
@@ -147,35 +147,35 @@ test_full_lifecycle() {
   id=$(agreement_id 1)
 
   local out
-  out=$(TRELLIS_SOURCE_KEY=payer "$CLI_BIN" --json init \
+  out=$(PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" --json init \
     --agreement-id "$id" --payer "$PAYER" --payee "$PAYEE" \
     --token "$TOKEN" --resolver "$RESOLVER" \
     --milestones "$amount1,$amount2" --yes 2>&1)
   assert_eq "init: status success" "success" "$(echo "$out" | jq -r .status)"
 
-  out=$(TRELLIS_SOURCE_KEY=payer "$CLI_BIN" --json status --agreement-id "$id" 2>&1)
+  out=$(PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" --json status --agreement-id "$id" 2>&1)
   assert_eq "status: payer matches" "$PAYER" "$(echo "$out" | jq -r .result.payer)"
   assert_eq "status: milestone 0 amount" "$amount1" "$(echo "$out" | jq -r '.result.milestones[0].amount')"
   assert_eq "status: milestone 0 pending" "Pending" "$(echo "$out" | jq -r '.result.milestones[0].status')"
 
-  out=$(TRELLIS_SOURCE_KEY=payer "$CLI_BIN" --json lock-funds --agreement-id "$id" --milestone-id 0 --yes 2>&1)
+  out=$(PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" --json lock-funds --agreement-id "$id" --milestone-id 0 --yes 2>&1)
   assert_eq "lock-funds: status success" "success" "$(echo "$out" | jq -r .status)"
 
-  out=$(TRELLIS_SOURCE_KEY=payer "$CLI_BIN" --json milestone-status --agreement-id "$id" --milestone-id 0 2>&1)
+  out=$(PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" --json milestone-status --agreement-id "$id" --milestone-id 0 2>&1)
   assert_eq "milestone-status: funded after lock" "Funded" "$(echo "$out" | jq -r .result.status)"
 
-  out=$(TRELLIS_SOURCE_KEY=payee "$CLI_BIN" --json submit-work --agreement-id "$id" --milestone-id 0 \
+  out=$(PAYLOCK_SOURCE_KEY=payee "$CLI_BIN" --json submit-work --agreement-id "$id" --milestone-id 0 \
     --proof-uri "ipfs://QmIntegrationTest" --yes 2>&1)
   assert_eq "submit-work: status success (with proof-uri)" "success" "$(echo "$out" | jq -r .status)"
 
-  out=$(TRELLIS_SOURCE_KEY=payer "$CLI_BIN" --json milestone-status --agreement-id "$id" --milestone-id 0 2>&1)
+  out=$(PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" --json milestone-status --agreement-id "$id" --milestone-id 0 2>&1)
   assert_eq "milestone-status: work submitted" "WorkSubmitted" "$(echo "$out" | jq -r .result.status)"
   assert_eq "milestone-status: proof_uri recorded" "ipfs://QmIntegrationTest" "$(echo "$out" | jq -r .result.proof_uri)"
 
-  out=$(TRELLIS_SOURCE_KEY=payer "$CLI_BIN" --json approve-release --agreement-id "$id" --milestone-id 0 --yes 2>&1)
+  out=$(PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" --json approve-release --agreement-id "$id" --milestone-id 0 --yes 2>&1)
   assert_eq "approve-release: status success" "success" "$(echo "$out" | jq -r .status)"
 
-  out=$(TRELLIS_SOURCE_KEY=payer "$CLI_BIN" --json milestone-status --agreement-id "$id" --milestone-id 0 2>&1)
+  out=$(PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" --json milestone-status --agreement-id "$id" --milestone-id 0 2>&1)
   assert_eq "milestone-status: completed after approval" "Completed" "$(echo "$out" | jq -r .result.status)"
 }
 
@@ -183,22 +183,22 @@ test_dispute_lifecycle() {
   local id
   id=$(agreement_id 2)
 
-  TRELLIS_SOURCE_KEY=payer "$CLI_BIN" init \
+  PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" init \
     --agreement-id "$id" --payer "$PAYER" --payee "$PAYEE" \
     --token "$TOKEN" --resolver "$RESOLVER" --milestones "500" --yes >/dev/null 2>&1
-  TRELLIS_SOURCE_KEY=payer "$CLI_BIN" lock-funds --agreement-id "$id" --milestone-id 0 --yes >/dev/null 2>&1
+  PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" lock-funds --agreement-id "$id" --milestone-id 0 --yes >/dev/null 2>&1
 
   local out
-  out=$(TRELLIS_SOURCE_KEY=payee "$CLI_BIN" --json raise-dispute --agreement-id "$id" --milestone-id 0 --caller "$PAYEE" --yes 2>&1)
+  out=$(PAYLOCK_SOURCE_KEY=payee "$CLI_BIN" --json raise-dispute --agreement-id "$id" --milestone-id 0 --caller "$PAYEE" --yes 2>&1)
   assert_eq "raise-dispute: status success" "success" "$(echo "$out" | jq -r .status)"
 
-  out=$(TRELLIS_SOURCE_KEY=payer "$CLI_BIN" --json milestone-status --agreement-id "$id" --milestone-id 0 2>&1)
+  out=$(PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" --json milestone-status --agreement-id "$id" --milestone-id 0 2>&1)
   assert_eq "milestone-status: disputed" "Disputed" "$(echo "$out" | jq -r .result.status)"
 
-  out=$(TRELLIS_SOURCE_KEY=resolver "$CLI_BIN" --json resolve-dispute --agreement-id "$id" --milestone-id 0 --refund-to-payer --yes 2>&1)
+  out=$(PAYLOCK_SOURCE_KEY=resolver "$CLI_BIN" --json resolve-dispute --agreement-id "$id" --milestone-id 0 --refund-to-payer --yes 2>&1)
   assert_eq "resolve-dispute: status success" "success" "$(echo "$out" | jq -r .status)"
 
-  out=$(TRELLIS_SOURCE_KEY=payer "$CLI_BIN" --json milestone-status --agreement-id "$id" --milestone-id 0 2>&1)
+  out=$(PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" --json milestone-status --agreement-id "$id" --milestone-id 0 2>&1)
   assert_eq "milestone-status: refunded" "Refunded" "$(echo "$out" | jq -r .result.status)"
 }
 
@@ -206,15 +206,15 @@ test_cancel_unfunded_milestone() {
   local id
   id=$(agreement_id 3)
 
-  TRELLIS_SOURCE_KEY=payer "$CLI_BIN" init \
+  PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" init \
     --agreement-id "$id" --payer "$PAYER" --payee "$PAYEE" \
     --token "$TOKEN" --resolver "$RESOLVER" --milestones "750" --yes >/dev/null 2>&1
 
   local out
-  out=$(TRELLIS_SOURCE_KEY=payer "$CLI_BIN" --json cancel-milestone --agreement-id "$id" --milestone-id 0 --yes 2>&1)
+  out=$(PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" --json cancel-milestone --agreement-id "$id" --milestone-id 0 --yes 2>&1)
   assert_eq "cancel-milestone: status success" "success" "$(echo "$out" | jq -r .status)"
 
-  out=$(TRELLIS_SOURCE_KEY=payer "$CLI_BIN" --json milestone-status --agreement-id "$id" --milestone-id 0 2>&1)
+  out=$(PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" --json milestone-status --agreement-id "$id" --milestone-id 0 2>&1)
   assert_eq "milestone-status: cancelled after cancel" "Cancelled" "$(echo "$out" | jq -r .result.status)"
 }
 
@@ -224,7 +224,7 @@ test_error_paths() {
   # Malformed agreement ID must be rejected client-side, before ever
   # reaching the network (no tx_hash / RPC round trip).
   set +e
-  out=$(TRELLIS_SOURCE_KEY=payer "$CLI_BIN" status --agreement-id "deadbeef" 2>&1)
+  out=$(PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" status --agreement-id "deadbeef" 2>&1)
   status_code=$?
   set -e
   assert_eq "status: malformed agreement_id exits non-zero" "1" "$status_code"
@@ -234,21 +234,21 @@ test_error_paths() {
   # round-trips to the network — confirms error passthrough on failure).
   local id
   id=$(agreement_id 4)
-  TRELLIS_SOURCE_KEY=payer "$CLI_BIN" init \
+  PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" init \
     --agreement-id "$id" --payer "$PAYER" --payee "$PAYEE" \
     --token "$TOKEN" --resolver "$RESOLVER" --milestones "100" --yes >/dev/null 2>&1
 
-  out=$(TRELLIS_SOURCE_KEY=payer "$CLI_BIN" --json init \
+  out=$(PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" --json init \
     --agreement-id "$id" --payer "$PAYER" --payee "$PAYEE" \
     --token "$TOKEN" --resolver "$RESOLVER" --milestones "100" --yes 2>&1) || true
   assert_eq "init: double-init reports error status" "error" "$(echo "$out" | jq -r .status)"
 
   # A milestone action from an unauthorized identity must fail.
-  out=$(TRELLIS_SOURCE_KEY=payee "$CLI_BIN" --json lock-funds --agreement-id "$id" --milestone-id 0 --yes 2>&1) || true
+  out=$(PAYLOCK_SOURCE_KEY=payee "$CLI_BIN" --json lock-funds --agreement-id "$id" --milestone-id 0 --yes 2>&1) || true
   assert_eq "lock-funds: wrong signer reports error status" "error" "$(echo "$out" | jq -r .status)"
 
   # --dry-run never touches the network and never prompts.
-  out=$(TRELLIS_SOURCE_KEY=payer "$CLI_BIN" --dry-run approve-release --agreement-id "$id" --milestone-id 0 2>&1)
+  out=$(PAYLOCK_SOURCE_KEY=payer "$CLI_BIN" --dry-run approve-release --agreement-id "$id" --milestone-id 0 2>&1)
   assert_contains "approve-release --dry-run prints the invoke command" "$out" "stellar contract invoke"
 }
 

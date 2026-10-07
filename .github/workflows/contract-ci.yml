@@ -137,15 +137,15 @@ jobs:
         run: cargo build --frozen --workspace
 
       - name: Build contract (wasm32)
-        run: cargo build --frozen --package trellis_core --target wasm32-unknown-unknown --release
+        run: cargo build --frozen --package paylock_core --target wasm32-unknown-unknown --release
 
       - name: Test
         run: cargo test --frozen --workspace
 
       - name: Validate test snapshots are up to date
         run: |
-          SOROBAN_TEST_SNAPSHOT_FILE=overwrite cargo test --manifest-path contracts/trellis_core/Cargo.toml
-          if ! git diff --exit-code contracts/trellis_core/test_snapshots/; then
+          SOROBAN_TEST_SNAPSHOT_FILE=overwrite cargo test --manifest-path contracts/paylock_core/Cargo.toml
+          if ! git diff --exit-code contracts/paylock_core/test_snapshots/; then
             echo ""
             echo "ERROR: Test snapshots are out of date."
             echo "Run 'make test-snapshots-update' locally and commit the updated snapshots."

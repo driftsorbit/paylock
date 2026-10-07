@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # .githooks/pre-commit
 #
-# Pre-commit hook for the Trellis monorepo.
+# Pre-commit hook for the Paylock monorepo.
 # Runs fast, staged-file-only checks before every commit:
 #
 #   Rust workspace  — cargo fmt --check, cargo clippy

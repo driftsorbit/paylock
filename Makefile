@@ -1,4 +1,4 @@
-# Trellis Protocol — Build Automation
+# Paylock Protocol — Build Automation
 #
 
 .PHONY: help build test lint fmt deploy clean setup
@@ -8,7 +8,7 @@
 .PHONY: changelog
 
 help: ## list all targets
-	@echo "Trellis Protocol — Build Targets"
+	@echo "Paylock Protocol — Build Targets"
 	@echo ""
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | sort | while IFS= read -r line; do \
 		target=$${line%%:*}; \
@@ -21,10 +21,10 @@ help: ## list all targets
 build: build-contract build-cli build-frontend ## build everything (contract WASM + frontend)
 
 build-contract: ## build only the contract WASM
-	cargo build --frozen --manifest-path contracts/trellis_core/Cargo.toml --target wasm32-unknown-unknown --release
+	cargo build --frozen --manifest-path contracts/paylock_core/Cargo.toml --target wasm32-unknown-unknown --release
 
 build-cli: ## build only the CLI binary
-	cargo build --frozen --manifest-path cli/trellis_cli/Cargo.toml --release
+	cargo build --frozen --manifest-path cli/paylock_cli/Cargo.toml --release
 
 build-frontend: ## build only the frontend bundle
 	# npm ci (not npm install) installs exact versions from package-lock.json
@@ -36,17 +36,17 @@ build-frontend: ## build only the frontend bundle
 test: test-contract test-cli test-frontend ## run all tests (contract + CLI + frontend)
 
 test-contract: ## run only contract tests
-	cargo test --frozen --manifest-path contracts/trellis_core/Cargo.toml
+	cargo test --frozen --manifest-path contracts/paylock_core/Cargo.toml
 
 # CI does not shell out to make: the `verify` job in
 # .github/workflows/contract-ci.yml runs `cargo test --workspace`, which
-# already covers cli/trellis_cli. This target keeps `make test` in parity.
+# already covers cli/paylock_cli. This target keeps `make test` in parity.
 test-cli: ## run only CLI tests
-	cargo test --frozen --manifest-path cli/trellis_cli/Cargo.toml
+	cargo test --frozen --manifest-path cli/paylock_cli/Cargo.toml
 
 test-snapshots-update: ## regenerate Soroban test snapshots (commit the result)
-	SOROBAN_TEST_SNAPSHOT_FILE=overwrite cargo test --manifest-path contracts/trellis_core/Cargo.toml
-	@echo "Snapshots regenerated. Review the diff with: git diff contracts/trellis_core/test_snapshots/"
+	SOROBAN_TEST_SNAPSHOT_FILE=overwrite cargo test --manifest-path contracts/paylock_core/Cargo.toml
+	@echo "Snapshots regenerated. Review the diff with: git diff contracts/paylock_core/test_snapshots/"
 
 test-frontend: ## run only frontend tests
 	cd frontend && npm ci && npm test
@@ -56,8 +56,8 @@ test-frontend: ## run only frontend tests
 lint: lint-contract lint-frontend ## run all linters (clippy + oxlint)
 
 lint-contract: ## run only clippy on contract and CLI
-	cargo clippy --frozen --manifest-path contracts/trellis_core/Cargo.toml -- -D warnings
-	cargo clippy --frozen --manifest-path cli/trellis_cli/Cargo.toml -- -D warnings
+	cargo clippy --frozen --manifest-path contracts/paylock_core/Cargo.toml -- -D warnings
+	cargo clippy --frozen --manifest-path cli/paylock_cli/Cargo.toml -- -D warnings
 
 lint-frontend: ## run only oxlint on frontend
 	cd frontend && npm ci && npm run lint
@@ -82,17 +82,17 @@ changelog: ## regenerate CHANGELOG.md from git history (git-cliff)
 
 # ── Deploy ─────────────────────────────────────────────────────────────────
 
-DEPLOYER_IDENTITY ?= trellis-deployer
+DEPLOYER_IDENTITY ?= paylock-deployer
 
 deploy: ## deploy contract to testnet (see DEPLOYMENT.md)
-	@echo "=== Deploying Trellis to Stellar Testnet ==="
+	@echo "=== Deploying Paylock to Stellar Testnet ==="
 	@echo "Ensure you have:"
 	@echo "  1. A funded testnet identity: stellar keys fund <name> --network testnet"
 	@echo "  2. The contract WASM built: make build-contract"
 	@echo ""
 	@echo "Running: stellar contract deploy ..."
 	stellar contract deploy \
-		--wasm target/wasm32-unknown-unknown/release/trellis_core.wasm \
+		--wasm target/wasm32-unknown-unknown/release/paylock_core.wasm \
 		--source $(DEPLOYER_IDENTITY) \
 		--network testnet
 

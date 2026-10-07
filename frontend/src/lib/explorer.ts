@@ -3,7 +3,7 @@ import { NETWORK_PASSPHRASE } from './config'
 // ---------------------------------------------------------------------------
 // Stellar Expert deep links
 //
-// Every on-chain identifier surfaced by Trellis — transaction hashes, contract
+// Every on-chain identifier surfaced by Paylock — transaction hashes, contract
 // IDs, account addresses — should be one click away from its canonical record
 // on the public block explorer.  Trust in a trustless system comes from
 // verifiability: users must never have to take the UI's word for what happened.
@@ -14,7 +14,7 @@ export type StellarNetwork = 'public' | 'testnet'
 
 /**
  * Entity segments in a Stellar Expert URL path.
- * "agreement" is a Trellis-internal hex ID — Stellar Expert has no page for it,
+ * "agreement" is a Paylock-internal hex ID — Stellar Expert has no page for it,
  * so explorerUrl returns null and ExplorerLink renders nothing (no 404 link).
  */
 export type ExplorerEntity = 'tx' | 'op' | 'account' | 'contract' | 'ledger' | 'asset' | 'agreement'
@@ -29,7 +29,7 @@ export const TESTNET_NETWORK_PASSPHRASE = 'Test SDF Network ; September 2015'
  *
  * Only the pubnet passphrase resolves to `public`; everything else (testnet,
  * futurenet, standalone, or a missing/misconfigured value) falls back to
- * `testnet`, which is where Trellis is deployed today.  Falling back is
+ * `testnet`, which is where Paylock is deployed today.  Falling back is
  * deliberate — a wrong-network link is recoverable, a crash on a missing env
  * var is not.
  */
@@ -37,7 +37,7 @@ export function networkFromPassphrase(passphrase?: string | null): StellarNetwor
   return passphrase?.trim() === PUBLIC_NETWORK_PASSPHRASE ? 'public' : 'testnet'
 }
 
-/** The network Trellis is currently pointed at, derived from `VITE_NETWORK_PASSPHRASE`. */
+/** The network Paylock is currently pointed at, derived from `VITE_NETWORK_PASSPHRASE`. */
 export const ACTIVE_NETWORK: StellarNetwork = networkFromPassphrase(NETWORK_PASSPHRASE)
 
 /** Explorer root for `network`, e.g. `https://stellar.expert/explorer/testnet`. */

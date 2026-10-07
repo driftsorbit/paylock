@@ -72,8 +72,8 @@ export function AgreementIdGenerator({ onGenerate }: AgreementIdGeneratorProps) 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Trellis Agreement ID',
-          text: `Agreement ID: ${agreementId}\n\nView on Trellis: ${window.location.origin}/agreement/${agreementId}`,
+          title: 'Paylock Agreement ID',
+          text: `Agreement ID: ${agreementId}\n\nView on Paylock: ${window.location.origin}/agreement/${agreementId}`,
         })
         setShared(true)
         setTimeout(() => setShared(false), 2000)

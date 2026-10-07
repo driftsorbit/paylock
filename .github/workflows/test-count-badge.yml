@@ -4,7 +4,7 @@ on:
   push:
     branches: [master, main]
     paths:
-      - 'contracts/trellis_core/**'
+      - 'contracts/paylock_core/**'
       - 'Cargo.toml'
       - 'Cargo.lock'
       - '.github/workflows/test-count-badge.yml'
@@ -36,7 +36,7 @@ jobs:
         id: count
         run: |
           set -euo pipefail
-          count=$(cargo test --manifest-path contracts/trellis_core/Cargo.toml -- --list 2>/dev/null | grep -c ': test$' || true)
+          count=$(cargo test --manifest-path contracts/paylock_core/Cargo.toml -- --list 2>/dev/null | grep -c ': test$' || true)
           count=${count:-0}
           echo "count=${count}" >> "$GITHUB_OUTPUT"
 

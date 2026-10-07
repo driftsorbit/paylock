@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Redeploys the Trellis contract to Stellar testnet and creates a fresh test
+# Redeploys the Paylock contract to Stellar testnet and creates a fresh test
 # agreement. Use this after a testnet reset invalidates the contract ID or
 # agreement ID referenced in DEPLOYMENT.md.
 set -euo pipefail
@@ -8,7 +8,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 RPC_URL="https://soroban-testnet.stellar.org"
 NETWORK_PASSPHRASE="Test SDF Network ; September 2015"
-DEPLOYER_KEY="trellis-deployer"
+DEPLOYER_KEY="paylock-deployer"
 
 echo "==> Ensuring wasm32-unknown-unknown target is installed"
 rustup target add wasm32-unknown-unknown
@@ -21,12 +21,12 @@ stellar keys fund "$DEPLOYER_KEY" --network testnet --rpc-url "$RPC_URL"
 
 echo "==> Building contract WASM"
 cargo rustc \
-  --manifest-path=contracts/trellis_core/Cargo.toml \
+  --manifest-path=contracts/paylock_core/Cargo.toml \
   --crate-type=cdylib \
   --target=wasm32-unknown-unknown \
   --release
 
-WASM_PATH="target/wasm32-unknown-unknown/release/trellis_core.wasm"
+WASM_PATH="target/wasm32-unknown-unknown/release/paylock_core.wasm"
 
 echo "==> Deploying contract to testnet"
 CONTRACT_ID=$(stellar contract deploy \
@@ -35,21 +35,21 @@ CONTRACT_ID=$(stellar contract deploy \
   --network testnet)
 
 echo "==> Building CLI"
-cargo build --release --manifest-path=cli/trellis_cli/Cargo.toml
+cargo build --release --manifest-path=cli/paylock_cli/Cargo.toml
 
-CLI_BIN="target/release/trellis"
+CLI_BIN="target/release/paylock"
 
 echo "==> Creating payer/payee/resolver identities for the test agreement"
-for name in trellis-payer trellis-payee trellis-resolver; do
+for name in paylock-payer paylock-payee paylock-resolver; do
   if ! stellar keys address "$name" >/dev/null 2>&1; then
     stellar keys generate "$name" --network testnet
   fi
   stellar keys fund "$name" --network testnet --rpc-url "$RPC_URL"
 done
 
-PAYER=$(stellar keys address trellis-payer)
-PAYEE=$(stellar keys address trellis-payee)
-RESOLVER=$(stellar keys address trellis-resolver)
+PAYER=$(stellar keys address paylock-payer)
+PAYEE=$(stellar keys address paylock-payee)
+RESOLVER=$(stellar keys address paylock-resolver)
 USDC_ISSUER="GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
 # `init` needs the USDC Stellar Asset Contract (C...) address, not the
 # issuer account (G...) — derive it from the asset.
@@ -58,8 +58,8 @@ AGREEMENT_ID=$(printf '01%.0s' {1..64} | head -c 64)
 
 export STELLAR_RPC_URL="$RPC_URL"
 export STELLAR_NETWORK_PASSPHRASE="$NETWORK_PASSPHRASE"
-export TRELLIS_CONTRACT_ID="$CONTRACT_ID"
-export TRELLIS_SOURCE_KEY="$DEPLOYER_KEY"
+export PAYLOCK_CONTRACT_ID="$CONTRACT_ID"
+export PAYLOCK_SOURCE_KEY="$DEPLOYER_KEY"
 
 echo "==> Creating fresh test agreement"
 "$CLI_BIN" init \
@@ -81,5 +81,5 @@ Payee:         $PAYEE
 Resolver:      $RESOLVER
 
 Verify with:
-  TRELLIS_CONTRACT_ID=$CONTRACT_ID $CLI_BIN status --agreement-id $AGREEMENT_ID
+  PAYLOCK_CONTRACT_ID=$CONTRACT_ID $CLI_BIN status --agreement-id $AGREEMENT_ID
 EOF

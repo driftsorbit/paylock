@@ -132,7 +132,7 @@ describe('AgreementIdGenerator', () => {
 
     expect(navigator.share).toHaveBeenCalledOnce()
     const shareData = (navigator.share as ReturnType<typeof vi.fn>).mock.calls[0][0]
-    expect(shareData.title).toBe('Trellis Agreement ID')
+    expect(shareData.title).toBe('Paylock Agreement ID')
     expect(shareData.text).toContain('Agreement ID:')
   })
 

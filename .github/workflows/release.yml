@@ -114,8 +114,8 @@ jobs:
           else
             TAG_VERSION="${GITHUB_REF_NAME#v}"
           fi
-          CLI_VERSION=$(grep -m1 '^version' cli/trellis_cli/Cargo.toml | sed -E 's/version = "(.*)"/\1/')
-          CONTRACT_VERSION=$(grep -m1 '^version' contracts/trellis_core/Cargo.toml | sed -E 's/version = "(.*)"/\1/')
+          CLI_VERSION=$(grep -m1 '^version' cli/paylock_cli/Cargo.toml | sed -E 's/version = "(.*)"/\1/')
+          CONTRACT_VERSION=$(grep -m1 '^version' contracts/paylock_core/Cargo.toml | sed -E 's/version = "(.*)"/\1/')
           FRONTEND_VERSION=$(node -p "require('./frontend/package.json').version")
 
           echo "Release version:  $TAG_VERSION"
@@ -124,8 +124,8 @@ jobs:
           echo "Frontend version: $FRONTEND_VERSION"
 
           MISMATCH=0
-          [ "$TAG_VERSION" = "$CLI_VERSION" ] || { echo "::error::Release version ($TAG_VERSION) does not match cli/trellis_cli/Cargo.toml version ($CLI_VERSION)"; MISMATCH=1; }
-          [ "$TAG_VERSION" = "$CONTRACT_VERSION" ] || { echo "::error::Release version ($TAG_VERSION) does not match contracts/trellis_core/Cargo.toml version ($CONTRACT_VERSION)"; MISMATCH=1; }
+          [ "$TAG_VERSION" = "$CLI_VERSION" ] || { echo "::error::Release version ($TAG_VERSION) does not match cli/paylock_cli/Cargo.toml version ($CLI_VERSION)"; MISMATCH=1; }
+          [ "$TAG_VERSION" = "$CONTRACT_VERSION" ] || { echo "::error::Release version ($TAG_VERSION) does not match contracts/paylock_core/Cargo.toml version ($CONTRACT_VERSION)"; MISMATCH=1; }
           [ "$TAG_VERSION" = "$FRONTEND_VERSION" ] || { echo "::error::Release version ($TAG_VERSION) does not match frontend/package.json version ($FRONTEND_VERSION)"; MISMATCH=1; }
 
           if [ "$MISMATCH" -eq 1 ]; then
@@ -179,13 +179,13 @@ jobs:
           cargo check --locked --workspace
           echo "::endgroup::"
 
-      - name: Build trellis_core WASM
+      - name: Build paylock_core WASM
         # `cargo rustc` targeting wasm32-unknown-unknown, not `stellar contract
         # build` (wasm32v1-none) — see DEPLOYMENT.md for why.
         run: |
           cargo rustc \
             --frozen \
-            --manifest-path=contracts/trellis_core/Cargo.toml \
+            --manifest-path=contracts/paylock_core/Cargo.toml \
             --crate-type=cdylib \
             --target=wasm32-unknown-unknown \
             --release
@@ -193,8 +193,8 @@ jobs:
       - name: Upload WASM artifact
         uses: actions/upload-artifact@v7
         with:
-          name: trellis_core-wasm
-          path: target/wasm32-unknown-unknown/release/trellis_core.wasm
+          name: paylock_core-wasm
+          path: target/wasm32-unknown-unknown/release/paylock_core.wasm
 
   build-cli:
     name: Build CLI (${{ matrix.target }})
@@ -206,13 +206,13 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            bin: trellis
+            bin: paylock
           - os: macos-latest
             target: x86_64-apple-darwin
-            bin: trellis
+            bin: paylock
           - os: windows-latest
             target: x86_64-pc-windows-msvc
-            bin: trellis.exe
+            bin: paylock.exe
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
@@ -228,19 +228,19 @@ jobs:
         with:
           key: ${{ matrix.target }}
 
-      - name: Build trellis CLI
-        run: cargo build --frozen --release --manifest-path=cli/trellis_cli/Cargo.toml --target=${{ matrix.target }}
+      - name: Build paylock CLI
+        run: cargo build --frozen --release --manifest-path=cli/paylock_cli/Cargo.toml --target=${{ matrix.target }}
 
       - name: Package binary
         shell: bash
         run: |
           mkdir -p dist
-          cp target/${{ matrix.target }}/release/${{ matrix.bin }} dist/trellis-${{ matrix.target }}${{ matrix.bin == 'trellis.exe' && '.exe' || '' }}
+          cp target/${{ matrix.target }}/release/${{ matrix.bin }} dist/paylock-${{ matrix.target }}${{ matrix.bin == 'paylock.exe' && '.exe' || '' }}
 
       - name: Upload CLI artifact
         uses: actions/upload-artifact@v7
         with:
-          name: trellis-cli-${{ matrix.target }}
+          name: paylock-cli-${{ matrix.target }}
           path: dist/*
 
   release:
@@ -262,7 +262,7 @@ jobs:
       - name: Generate SHA256 checksums
         run: |
           set -euo pipefail
-          find artifacts/trellis_core-wasm artifacts/trellis-cli-* -type f -print0 |
+          find artifacts/paylock_core-wasm artifacts/paylock-cli-* -type f -print0 |
             while IFS= read -r -d '' f; do
               sha256sum "$f" | sed "s|$(dirname "$f")/||" > "$f.sha256"
             done
@@ -276,7 +276,7 @@ jobs:
       - name: Sign artifacts and checksums
         run: |
           set -euo pipefail
-          find artifacts/trellis_core-wasm artifacts/trellis-cli-* -type f ! -name '*.asc' -print0 |
+          find artifacts/paylock_core-wasm artifacts/paylock-cli-* -type f ! -name '*.asc' -print0 |
             while IFS= read -r -d '' f; do
               gpg --batch --yes --detach-sign --armor -o "$f.asc" "$f"
             done
@@ -289,7 +289,7 @@ jobs:
           draft: true
           prerelease: ${{ contains(github.ref_name, '-') }}
           files: |
-            artifacts/trellis_core-wasm/*
-            artifacts/trellis-cli-x86_64-unknown-linux-gnu/*
-            artifacts/trellis-cli-x86_64-apple-darwin/*
-            artifacts/trellis-cli-x86_64-pc-windows-msvc/*
+            artifacts/paylock_core-wasm/*
+            artifacts/paylock-cli-x86_64-unknown-linux-gnu/*
+            artifacts/paylock-cli-x86_64-apple-darwin/*
+            artifacts/paylock-cli-x86_64-pc-windows-msvc/*

@@ -5,7 +5,7 @@ import { StatsBar } from '../components/StatsBar'
 import { useToastActions } from '../hooks/useToast'
 
 /**
- * HomePage — landing page for Trellis.
+ * HomePage — landing page for Paylock.
  *
  * Changes:
  * - Uses useTypingAnimation for the hero heading (#94, #97).

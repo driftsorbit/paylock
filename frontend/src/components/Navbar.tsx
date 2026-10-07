@@ -36,7 +36,7 @@ function Navbar() {
     <nav className="relative bg-navy-900 dark:bg-navy-900 light:bg-white border-b border-navy-700 dark:border-navy-700 light:border-gray-200 px-4 sm:px-6 py-4 flex items-center justify-between">
       <div className="flex items-center gap-6">
         <Link to="/" className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
-          <span className="text-cyan-400 text-xl font-bold tracking-tight">Trellis</span>
+          <span className="text-cyan-400 text-xl font-bold tracking-tight">Paylock</span>
           <span className="hidden sm:inline text-gray-500 dark:text-gray-500 light:text-gray-600 text-sm">Trustless Milestone Escrow</span>
         </Link>
 

@@ -30,7 +30,7 @@ interface WalletContextValue {
 
 const WalletContext = createContext<WalletContextValue | null>(null);
 
-const STORAGE_KEY = 'trellis_wallet_connected';
+const STORAGE_KEY = 'paylock_wallet_connected';
 const ACCOUNT_POLL_INTERVAL_MS = 3_000;
 const PASSPHRASE_RETRY_ATTEMPTS = 3;
 const PASSPHRASE_RETRY_DELAY_MS = 500;

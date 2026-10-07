@@ -23,7 +23,7 @@ describe('<Navbar />', () => {
   it('renders the product name and tagline', () => {
     renderNavbar()
 
-    expect(screen.getByText('Trellis')).toBeInTheDocument()
+    expect(screen.getByText('Paylock')).toBeInTheDocument()
     expect(screen.getByText('Trustless Milestone Escrow')).toBeInTheDocument()
   })
 

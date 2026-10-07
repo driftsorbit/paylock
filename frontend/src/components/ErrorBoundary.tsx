@@ -62,7 +62,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 Try Again
               </button>
               <a
-                href="https://github.com/Trellis-Ecosystem/trellis/issues"
+                href="https://github.com/Paylock-Ecosystem/paylock/issues"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full px-4 py-2 border border-cyan-400 text-cyan-400 dark:text-cyan-400 light:text-cyan-600 font-semibold rounded-lg hover:bg-cyan-400/10 transition-colors"

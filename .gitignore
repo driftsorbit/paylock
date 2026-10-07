@@ -1,7 +1,7 @@
 /target
 **/target
 .env
-contracts/trellis_core/.env
+contracts/paylock_core/.env
 *.log
 
 # IDE settings — user-specific, should not be tracked

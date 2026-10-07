@@ -1,4 +1,4 @@
-export const HISTORY_STORAGE_KEY = 'trellis_agreement_history'
+export const HISTORY_STORAGE_KEY = 'paylock_agreement_history'
 
 /** Most recent entries kept; older ones fall off the end of the list. */
 export const MAX_HISTORY_ENTRIES = 20

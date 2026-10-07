@@ -46,7 +46,7 @@ jobs:
           HOME: ${{ steps.key-store.outputs.path }}
           CARGO_HOME: ${{ steps.key-store.outputs.runner_home }}/.cargo
           RUSTUP_HOME: ${{ steps.key-store.outputs.runner_home }}/.rustup
-          TRELLIS_E2E_NETWORK: testnet
+          PAYLOCK_E2E_NETWORK: testnet
         run: bash tests/cli_integration/run.sh
 
       - name: Remove temporary test identities

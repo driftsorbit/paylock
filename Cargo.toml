@@ -1,8 +1,8 @@
 [workspace]
 resolver = "2"
 members = [
-    "contracts/trellis_core",
-    "cli/trellis_cli",
+    "contracts/paylock_core",
+    "cli/paylock_cli",
 ]
 
 # Dev/test profile: strip debuginfo from dependencies to keep artifact

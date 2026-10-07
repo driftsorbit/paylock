@@ -1,4 +1,4 @@
-# gitleaks configuration for the Trellis monorepo.
+# gitleaks configuration for the Paylock monorepo.
 #
 # gitleaks uses its built-in ruleset by default.  This file only adds
 # project-specific allowances on top of the defaults.
@@ -12,7 +12,7 @@
 #      comment explaining why the match is safe.
 #   3. Keep the justification to one sentence — it must be reviewable.
 
-title = "Trellis gitleaks config"
+title = "Paylock gitleaks config"
 
 [extend]
 # Inherit the default gitleaks ruleset.
@@ -28,8 +28,8 @@ regexes = []
 # File paths that are always skipped (test fixtures, example configs, docs).
 paths = [
     # Example env files — they contain only placeholder values.
-    '''contracts/trellis_core/\.env\.example''',
-    '''cli/trellis_cli/\.env\.example''',
+    '''contracts/paylock_core/\.env\.example''',
+    '''cli/paylock_cli/\.env\.example''',
     '''frontend/\.env\.example''',
     '''frontend/\.env\.test''',
 ]

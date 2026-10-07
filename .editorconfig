@@ -1,6 +1,6 @@
 # EditorConfig — https://editorconfig.org
 #
-# Cross-editor formatting consistency for the Trellis monorepo.
+# Cross-editor formatting consistency for the Paylock monorepo.
 # Editors that support EditorConfig (VS Code, JetBrains, Vim, Emacs, …)
 # will pick these rules up automatically, so contributors stop fighting
 # over tabs-vs-spaces, line endings, and trailing whitespace.
@@ -28,7 +28,7 @@ indent_size = 4
 [*.{ts,tsx,js,jsx,mjs,cjs}]
 indent_size = 2
 
-# ─── Python (cli/trellis_cli) ─────────────────────────────────────────────
+# ─── Python (cli/paylock_cli) ─────────────────────────────────────────────
 [*.py]
 indent_size = 4
 max_line_length = 100

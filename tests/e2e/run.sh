@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Full user journey E2E test (#143).
 #
-# Deploys the trellis_core contract to a local Soroban devnet, starts the
+# Deploys the paylock_core contract to a local Soroban devnet, starts the
 # real frontend dev server against it, and drives an actual browser
 # (Playwright + Chromium) through creating an agreement via the UI with a
 # mocked Freighter wallet, then verifies it reads back correctly on the
@@ -14,7 +14,7 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 FRONTEND_DIR="$REPO_ROOT/frontend"
-WASM_PATH="$REPO_ROOT/target/wasm32-unknown-unknown/release/trellis_core.wasm"
+WASM_PATH="$REPO_ROOT/target/wasm32-unknown-unknown/release/paylock_core.wasm"
 RPC_URL="http://localhost:8000/soroban/rpc"
 PASSPHRASE="Standalone Network ; February 2017"
 DEV_SERVER_PORT=5173
@@ -79,8 +79,8 @@ PAYEE=$(stellar keys address payee)
 RESOLVER=$(stellar keys address resolver)
 PAYER_SECRET=$(stellar keys show payer)
 
-log "building trellis_core contract (wasm32)..."
-cargo rustc --manifest-path "$REPO_ROOT/contracts/trellis_core/Cargo.toml" \
+log "building paylock_core contract (wasm32)..."
+cargo rustc --manifest-path "$REPO_ROOT/contracts/paylock_core/Cargo.toml" \
   --crate-type=cdylib --target=wasm32-unknown-unknown --release >/dev/null
 
 log "resolving test token (native XLM SAC)..."
@@ -89,7 +89,7 @@ if ! stellar contract info interface --contract-id "$TOKEN" --network local >/de
   stellar contract asset deploy --asset native --source payer --network local >/dev/null 2>&1
 fi
 
-log "deploying trellis_core contract..."
+log "deploying paylock_core contract..."
 CONTRACT_ID=$(stellar contract deploy --wasm "$WASM_PATH" --source payer --network local 2>/dev/null | tail -1)
 log "token=$TOKEN contract=$CONTRACT_ID"
 
@@ -121,7 +121,7 @@ if ! compgen -G "${PLAYWRIGHT_BROWSERS_PATH:-$HOME/.cache/ms-playwright}/chromiu
 fi
 
 log "starting frontend dev server on :$DEV_SERVER_PORT..."
-(cd "$FRONTEND_DIR" && nohup npm run dev -- --port "$DEV_SERVER_PORT" --strictPort </dev/null >/tmp/trellis-e2e-vite.log 2>&1 &)
+(cd "$FRONTEND_DIR" && nohup npm run dev -- --port "$DEV_SERVER_PORT" --strictPort </dev/null >/tmp/paylock-e2e-vite.log 2>&1 &)
 sleep 1
 DEV_SERVER_PID=$(pgrep -f "vite.*--port $DEV_SERVER_PORT" | head -1)
 
@@ -131,7 +131,7 @@ for i in $(seq 1 30); do
     break
   fi
   if [ "$i" -eq 30 ]; then
-    log "dev server never responded on :$DEV_SERVER_PORT — see /tmp/trellis-e2e-vite.log"
+    log "dev server never responded on :$DEV_SERVER_PORT — see /tmp/paylock-e2e-vite.log"
     exit 1
   fi
   sleep 1

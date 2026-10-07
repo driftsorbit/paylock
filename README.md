@@ -91,7 +91,7 @@
     <circle cx="25" cy="22" r="2" fill="none" stroke="#00c2ff" stroke-width="2"/>
   </g>
   <!-- Title -->
-  <text x="400" y="150" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="800" fill="url(#titleGrad)" text-anchor="middle" letter-spacing="2">Trellis</text>
+  <text x="400" y="150" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="800" fill="url(#titleGrad)" text-anchor="middle" letter-spacing="2">Paylock</text>
   <!-- Subtitle -->
   <text x="400" y="180" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#94a3b8" text-anchor="middle" letter-spacing="1">Trustless Milestone Escrow on Stellar Soroban</text>
   <!-- Decorative line -->
@@ -112,11 +112,11 @@
 
 **Trustless, milestone-based escrow for freelance and remote work — built on Stellar's Soroban smart contract platform.**
 
-[![Contract CI](https://github.com/Trellis-Ecosystem/trellis/actions/workflows/contract-ci.yml/badge.svg)](https://github.com/Trellis-Ecosystem/trellis/actions/workflows/contract-ci.yml)
-[![Testnet E2E](https://github.com/Trellis-Ecosystem/trellis/actions/workflows/e2e-testnet.yml/badge.svg)](https://github.com/Trellis-Ecosystem/trellis/actions/workflows/e2e-testnet.yml)
-[![Frontend CI](https://github.com/Trellis-Ecosystem/trellis/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/Trellis-Ecosystem/trellis/actions/workflows/frontend-ci.yml)
-[![npm audit](https://github.com/Trellis-Ecosystem/trellis/actions/workflows/npm-audit.yml/badge.svg)](https://github.com/Trellis-Ecosystem/trellis/actions/workflows/npm-audit.yml)
-[![CodeQL](https://github.com/Trellis-Ecosystem/trellis/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Trellis-Ecosystem/trellis/actions/workflows/codeql-analysis.yml)
+[![Contract CI](https://github.com/Paylock-Ecosystem/paylock/actions/workflows/contract-ci.yml/badge.svg)](https://github.com/Paylock-Ecosystem/paylock/actions/workflows/contract-ci.yml)
+[![Testnet E2E](https://github.com/Paylock-Ecosystem/paylock/actions/workflows/e2e-testnet.yml/badge.svg)](https://github.com/Paylock-Ecosystem/paylock/actions/workflows/e2e-testnet.yml)
+[![Frontend CI](https://github.com/Paylock-Ecosystem/paylock/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/Paylock-Ecosystem/paylock/actions/workflows/frontend-ci.yml)
+[![npm audit](https://github.com/Paylock-Ecosystem/paylock/actions/workflows/npm-audit.yml/badge.svg)](https://github.com/Paylock-Ecosystem/paylock/actions/workflows/npm-audit.yml)
+[![CodeQL](https://github.com/Paylock-Ecosystem/paylock/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Paylock-Ecosystem/paylock/actions/workflows/codeql-analysis.yml)
 [![Rust](https://img.shields.io/badge/rust-stable-orange?logo=rust)]()
 [![Soroban](https://img.shields.io/badge/soroban-sdk%2022.x-blue)]()
 [![Deployed](https://img.shields.io/badge/testnet-live-success)]()
@@ -132,7 +132,7 @@
 
 Remote work and freelance contracting run on **trust that often doesn't exist** between strangers across borders. Clients hesitate to pay upfront. Workers hesitate to deliver without payment guarantees. The usual fix — a centralized escrow middleman — adds fees, delays, and a single point of failure.
 
-> **Trellis removes the middleman.** Funds are locked on-chain, released milestone by milestone as work is verified, with a built-in dispute process if either party disagrees. No platform holds your money. The contract does.
+> **Paylock removes the middleman.** Funds are locked on-chain, released milestone by milestone as work is verified, with a built-in dispute process if either party disagrees. No platform holds your money. The contract does.
 
 This matters everywhere, but especially for contributors in emerging markets — where access to reliable, low-fee, borderless payment infrastructure can be the difference between taking on international work or not.
 
@@ -177,7 +177,7 @@ Contracts are written in <strong>real Rust</strong>, compiled to WASM, and run o
 A live test agreement exists on-chain and is queryable right now:
 
 ```bash
-trellis status --agreement-id 0101010101010101010101010101010101010101010101010101010101010101
+paylock status --agreement-id 0101010101010101010101010101010101010101010101010101010101010101
 ```
 
 | Attribute       | Value                                                                                                                      |
@@ -192,7 +192,7 @@ trellis status --agreement-id 01010101010101010101010101010101010101010101010101
 
 ## How It Works
 
-Trellis models a freelance engagement as an **agreement** made up of one or more **milestones**, each with its own funding, work submission, and release lifecycle.
+Paylock models a freelance engagement as an **agreement** made up of one or more **milestones**, each with its own funding, work submission, and release lifecycle.
 
 <!-- Animated State Machine SVG -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 460" width="100%" style="max-width:820px;height:auto">
@@ -370,7 +370,7 @@ Trellis models a freelance engagement as an **agreement** made up of one or more
 
 ## Architecture
 
-Trellis is a monorepo with three layers:
+Paylock is a monorepo with three layers:
 
 <!-- Animated Architecture SVG -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" width="100%" style="max-width:760px;height:auto">
@@ -404,7 +404,7 @@ Trellis is a monorepo with three layers:
   <g filter="url(#archGlow)">
     <rect x="30" y="30" width="700" height="70" rx="12" fill="url(#rustGrad)" stroke="#dc2626" stroke-width="1.2"/>
     <text x="50" y="55" font-family="monospace" font-size="11" fill="#fca5a5" font-weight="bold">LAYER 1 · ON-CHAIN</text>
-    <text x="50" y="82" font-family="monospace" font-size="14" fill="#f87171" font-weight="bold">contracts/trellis_core/</text>
+    <text x="50" y="82" font-family="monospace" font-size="14" fill="#f87171" font-weight="bold">contracts/paylock_core/</text>
     <text x="300" y="82" font-family="monospace" font-size="12" fill="#fca5a5">Soroban Smart Contract (Rust → WASM)</text>
     <!-- Pill tags -->
     <rect x="490" y="70" width="44" height="18" rx="9" fill="#dc2626" opacity="0.3"/>
@@ -421,7 +421,7 @@ Trellis is a monorepo with three layers:
   <g filter="url(#archGlow)">
     <rect x="30" y="125" width="700" height="70" rx="12" fill="url(#cliGrad)" stroke="#6366f1" stroke-width="1.2"/>
     <text x="50" y="150" font-family="monospace" font-size="11" fill="#a5b4fc" font-weight="bold">LAYER 2 · OFF-CHAIN</text>
-    <text x="50" y="177" font-family="monospace" font-size="14" fill="#818cf8" font-weight="bold">cli/trellis_cli/</text>
+    <text x="50" y="177" font-family="monospace" font-size="14" fill="#818cf8" font-weight="bold">cli/paylock_cli/</text>
     <text x="300" y="177" font-family="monospace" font-size="12" fill="#a5b4fc">Command-Line Interface (Rust + clap + reqwest)</text>
     <rect x="545" y="165" width="38" height="18" rx="9" fill="#6366f1" opacity="0.3"/>
     <text x="564" y="178" font-family="monospace" font-size="8" fill="#a5b4fc" text-anchor="middle">main.rs</text>
@@ -556,7 +556,7 @@ Open **http://localhost:5173** to see the animated landing page with the particl
 ### 🛠️ Build and test the contract
 
 ```bash
-cd contracts/trellis_core
+cd contracts/paylock_core
 cargo test
 ```
 
@@ -610,7 +610,7 @@ Known false positives are documented in [`frontend/.audit-allowlist.json`](./fro
 ### Building the contract WASM
 
 ```bash
-cd contracts/trellis_core
+cd contracts/paylock_core
 cargo rustc --manifest-path=Cargo.toml --crate-type=cdylib --target=wasm32-unknown-unknown --release
 ```
 
@@ -619,16 +619,16 @@ cargo rustc --manifest-path=Cargo.toml --crate-type=cdylib --target=wasm32-unkno
 ### ⌨️ CLI Usage
 
 ```bash
-cd cli/trellis_cli
+cd cli/paylock_cli
 cargo build --release
 
 export STELLAR_RPC_URL="https://soroban-testnet.stellar.org"
 export STELLAR_NETWORK_PASSPHRASE="Test SDF Network ; September 2015"
-export TRELLIS_CONTRACT_ID="CAUAO7CYKULE2K4EJMQ6LLRUHP7Y7JYOH6G2VBXKYG7PTETE3UZ3DU7Q"
-export TRELLIS_SOURCE_KEY="<your stellar identity name>"
+export PAYLOCK_CONTRACT_ID="CAUAO7CYKULE2K4EJMQ6LLRUHP7Y7JYOH6G2VBXKYG7PTETE3UZ3DU7Q"
+export PAYLOCK_SOURCE_KEY="<your stellar identity name>"
 
 # Create a new agreement
-trellis init \
+paylock init \
   --agreement-id <hex-id> \
   --payer <payer-address> \
   --payee <payee-address> \
@@ -637,18 +637,18 @@ trellis init \
   --milestones "1000,2000"
 
 # Check status
-trellis status --agreement-id <hex-id>
+paylock status --agreement-id <hex-id>
 
 # Check a single milestone's status
-trellis milestone-status --agreement-id <hex-id> --milestone-id 0
+paylock milestone-status --agreement-id <hex-id> --milestone-id 0
 
 # Fund the first milestone
-trellis lock-funds --agreement-id <hex-id> --milestone-id 0
+paylock lock-funds --agreement-id <hex-id> --milestone-id 0
 ```
 
 All **9 escrow commands** are implemented — `init`, `lock-funds`, `submit-work`, `approve-release`, `raise-dispute`, `resolve-dispute`, `cancel-milestone`, `status`, and `milestone-status`. The CLI also provides two utility commands: `completion` (see [Shell Completions](#shell-completions)) and `keys` (manage secret keys in the OS keychain). See [DEPLOYMENT.md](./DEPLOYMENT.md) for the full command reference.
 
-`trellis health` checks the configured RPC endpoint natively (`getHealth` + `getLatestLedger` over HTTP). It needs only an RPC URL, with no `stellar` binary, contract ID or source key, and it supports `--json` / `--human-readable` / `--quiet` / `--dry-run`.
+`paylock health` checks the configured RPC endpoint natively (`getHealth` + `getLatestLedger` over HTTP). It needs only an RPC URL, with no `stellar` binary, contract ID or source key, and it supports `--json` / `--human-readable` / `--quiet` / `--dry-run`.
 
 #### Global Output Flags
 
@@ -656,16 +656,16 @@ These flags work with every command and can be combined with `.env`/env-var conf
 
 ```bash
 # Preview without submitting
-trellis lock-funds --agreement-id <hex-id> --milestone-id 0 --dry-run
+paylock lock-funds --agreement-id <hex-id> --milestone-id 0 --dry-run
 
 # Machine-parseable JSON
-trellis status --agreement-id <hex-id> --json
+paylock status --agreement-id <hex-id> --json
 
 # Suppress everything except final JSON (implies --json)
-trellis status --agreement-id <hex-id> --quiet
+paylock status --agreement-id <hex-id> --quiet
 
 # Colorized summary
-trellis status --agreement-id <hex-id> --human-readable   # or -H
+paylock status --agreement-id <hex-id> --human-readable   # or -H
 ```
 
 Read-only queries (`status`, `milestone-status`) decode the raw XDR `ScVal`
@@ -676,7 +676,7 @@ required for these commands. The decoded result is rendered through the same
 Stellar CLI is installed.
 
 Native transaction simulation is implemented in
-`cli/trellis_cli/src/rpc.rs` (`RpcClient::simulate_transaction`) against the
+`cli/paylock_cli/src/rpc.rs` (`RpcClient::simulate_transaction`) against the
 Soroban JSON-RPC `simulateTransaction` method. For a base64
 `TransactionEnvelope` XDR it returns a typed result containing the recommended
 minimum resource fee (`minResourceFee`), the resource fee and instruction /
@@ -713,13 +713,13 @@ downstream failure. This check is skipped under `--dry-run`.
 
 ```bash
 # bash
-trellis completion bash > /etc/bash_completion.d/trellis
+paylock completion bash > /etc/bash_completion.d/paylock
 
 # zsh
-trellis completion zsh > "${fpath[1]}/_trellis"
+paylock completion zsh > "${fpath[1]}/_paylock"
 
 # fish
-trellis completion fish > ~/.config/fish/completions/trellis.fish
+paylock completion fish > ~/.config/fish/completions/paylock.fish
 ```
 
 Supported shells: `bash`, `zsh`, `fish`, `elvish`, `powershell`.
@@ -740,7 +740,7 @@ Supported shells: `bash`, `zsh`, `fish`, `elvish`, `powershell`.
 - Wallet connect — Freighter wallet integration with connection states
 - Event feed — real-time on-chain event history per agreement (limited to the last ~100k ledgers, ~6 days, that RPC providers retain; full history awaits an event-indexing service, #496)
 - Shell completions — bash, zsh, fish, elvish, powershell
-- Native strkey codec — `G...`/`S...`/`C...` Stellar address encode/decode with CRC16 checksum validation (`cli/trellis_cli/src/strkey.rs`)
+- Native strkey codec — `G...`/`S...`/`C...` Stellar address encode/decode with CRC16 checksum validation (`cli/paylock_cli/src/strkey.rs`)
 
 ### 🚧 Open for Contribution
 
@@ -759,13 +759,13 @@ See [Issues](../../issues) for the full task list — each issue has exact requi
 
 ## Contributing
 
-Trellis is built in the open and welcomes contributors of all experience levels — from documentation and frontend components to contract enhancements and tooling.
+Paylock is built in the open and welcomes contributors of all experience levels — from documentation and frontend components to contract enhancements and tooling.
 
 1. **Fork** the repo and clone it locally
 2. Browse [open issues](../../issues) tagged `good first issue` or `help wanted`
 3. **Comment** on the issue to claim it — wait for maintainer confirmation before starting
 4. **Branch:** `git checkout -b feat/your-feature-name`
-5. **Verify:** run `cargo test` in `contracts/trellis_core`
+5. **Verify:** run `cargo test` in `contracts/paylock_core`
 6. **PR:** open a PR referencing the issue with `Closes #X`
 
 > New to Soroban? Start with the [official Soroban docs](https://developers.stellar.org/docs/build/smart-contracts/overview).  
@@ -792,7 +792,7 @@ MIT — see [LICENSE](./LICENSE) for the full text.
       <animate attributeName="x2" values="100%;0%;100%" dur="4s" repeatCount="indefinite"/>
     </linearGradient>
   </defs>
-  <text x="250" y="25" font-family="system-ui, sans-serif" font-size="13" fill="#64748b" text-anchor="middle">Built by Allen · Trellis Ecosystem</text>
+  <text x="250" y="25" font-family="system-ui, sans-serif" font-size="13" fill="#64748b" text-anchor="middle">Built by Allen · Paylock Ecosystem</text>
   <text x="250" y="50" font-family="system-ui, sans-serif" font-size="11" fill="url(#footerGrad)" text-anchor="middle" font-weight="600">✦ Trustless Escrow for the Global Workforce ✦</text>
 </svg>
 

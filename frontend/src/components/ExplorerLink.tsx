@@ -16,7 +16,7 @@ interface ExplorerLinkProps {
   label?: ReactNode
   /** Show the full identifier instead of the `ABCD…WXYZ` short form. */
   full?: boolean
-  /** Explorer network. Defaults to the network Trellis is configured for. */
+  /** Explorer network. Defaults to the network Paylock is configured for. */
   network?: StellarNetwork
   className?: string
 }
@@ -57,7 +57,7 @@ export function ExplorerLink({
       href={href}
       target="_blank"
       // noreferrer alongside noopener: the explorer never needs to know which
-      // Trellis screen the user came from.
+      // Paylock screen the user came from.
       rel="noopener noreferrer"
       title={`View ${ENTITY_NOUN[type]} ${id} on Stellar Expert (${networkLabel(network)})`}
       data-testid="explorer-link"
